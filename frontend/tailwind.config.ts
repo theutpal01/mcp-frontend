@@ -16,7 +16,7 @@ const config: Config = {
           darkBtn: "#0B182E", 
         },
         glass: {
-          bg: "rgba(6, 18, 36, 0.4)", // Dark blue transparent tint
+          bg: "rgba(6, 18, 36, 0.7)", // Dark blue transparent tint
           border: "rgba(255, 255, 255, 0.08)",
         }
       },

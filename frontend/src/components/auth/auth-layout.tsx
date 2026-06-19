@@ -4,29 +4,36 @@ import { TiltCard } from "@/components/ui/tilt-card";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row items-center justify-center p-6 lg:p-16 gap-8 lg:gap-12 overflow-hidden select-none">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-16 gap-8 lg:gap-12 overflow-hidden select-none">
       
-      {/* LEFT HAND CARD: Branding & Asymmetric Graphic */}
-      <div className="w-full max-w-md lg:h-[580px] bg-glass-bg backdrop-blur-xl border border-glass-border rounded-3xl p-8 sm:p-10 shadow-2xl relative flex flex-col justify-between overflow-hidden">
+      {/* LEFT HAND CARD: Hidden on Mobile, Flex on Desktop */}
+      <div className="hidden lg:flex w-full max-w-md lg:h-[580px] bg-glass-bg backdrop-blur-xl border border-glass-border rounded-3xl p-8 sm:p-10 shadow-2xl relative flex-col justify-between overflow-hidden">
         <div className="relative z-10">
           <h1 className="text-3xl font-medium text-brand-yellow leading-tight tracking-wide text-left max-w-xs">
             MCPs that AI Agents can actually use.
           </h1>
         </div>
         
-        {/* Graph Container at the bottom of the card */}
         <div className="absolute inset-x-0 bottom-0 h-full w-full">
-          <GradientGraphic />
+          <GradientGraphic position="bottom" isReversed={false} />
         </div>
       </div>
 
-      {/* RIGHT HAND CARD: Interactive Form with 3D Mouse Tilt */}
+      {/* RIGHT HAND CARD: Main interactive area with responsive top bars */}
       <TiltCard 
         maxRotation={4} 
         scale={1.01}
-        className="w-full max-w-md lg:h-[580px] bg-glass-bg backdrop-blur-xl border border-glass-border rounded-3xl p-8 sm:p-10 shadow-2xl flex flex-col justify-center"
+        className="w-full max-w-md min-h-[540px] lg:h-[580px] bg-glass-bg backdrop-blur-xl border border-glass-border rounded-3xl p-8 sm:p-10 pt-24 sm:pt-28 lg:pt-10 shadow-2xl flex flex-col justify-center relative overflow-hidden"
       >
-        {children}
+        {/* Mobile/Tablet Only Header Accent: Hanging down, Horizontally Flipped */}
+        <div className="lg:hidden absolute inset-x-0 top-0 h-full w-full">
+          <GradientGraphic views="phone" position="top" isReversed={true} />
+        </div>
+
+        {/* Content Layer raised above background layer elements */}
+        <div className="relative z-10 w-full">
+          {children}
+        </div>
       </TiltCard>
       
     </div>
