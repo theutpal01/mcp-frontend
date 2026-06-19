@@ -8,26 +8,42 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        // High-end Neo-Grotesque pairing Helvetica with crisp developer mono
+        sans: ["Helvetica", "Arial", "sans-serif"],
+        mono: ["JetBrains Mono", "SF Mono", "Menlo", "Courier New", "monospace"],
+      },
       colors: {
-        background: "#04060A", // True deep dark background from image
+        background: "#030508", // Absolute midnight black
         brand: {
           yellow: "#FBEB4D", 
           blue: "#007BFF", 
           darkBtn: "#0B182E", 
         },
         glass: {
-          bg: "rgba(6, 18, 36, 0.7)", // Dark blue transparent tint
-          border: "rgba(255, 255, 255, 0.08)",
+          bg: "rgba(6, 18, 36, 0.4)",
+          border: "rgba(255, 255, 255, 0.06)",
         }
       },
+	  
       keyframes: {
         waveUp: {
-          "0%, 100%": { transform: "scaleY(1)", brightness: "100%" },
-          "50%": { transform: "scaleY(1.15)", brightness: "125%" },
+          "0%, 100%": { transform: "scaleY(1)", filter: "brightness(100%) drop-shadow(0 0 10px rgba(0,123,255,0.2))" },
+          "50%": { transform: "scaleY(1.18)", filter: "brightness(140%) drop-shadow(0 0 25px rgba(251,235,77,0.4))" },
+        },
+        pulseGlow: {
+          "0%, 100%": { opacity: "0.2" },
+          "50%": { opacity: "0.4" }
+        },
+        gridDrift: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(40px)" }
         }
       },
       animation: {
-        'wave-slow': "waveUp 6s ease-in-out infinite",
+        'wave-fluid': "waveUp 5s cubic-bezier(0.25, 1, 0.5, 1) infinite",
+        'pulse-slow': "pulseGlow 8s ease-in-out infinite",
+        'grid-scroll': "gridDrift 20s linear infinite",
       }
     },
   },

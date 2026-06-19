@@ -27,7 +27,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
       >
         {/* Mobile/Tablet Only Header Accent: Hanging down, Horizontally Flipped */}
         <div className="lg:hidden absolute inset-x-0 top-0 h-full w-full">
-          <GradientGraphic views="phone" position="top" isReversed={true} />
+          <GradientGraphic position="top" isReversed={true} />
         </div>
 
         {/* Content Layer raised above background layer elements */}
