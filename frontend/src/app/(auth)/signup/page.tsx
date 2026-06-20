@@ -46,7 +46,7 @@ export default function SignupPage() {
 					</div>
 
 					<div className="pt-2">
-						<Button type="submit">
+						<Button type="submit" glass>
 							Create new Account
 						</Button>
 					</div>

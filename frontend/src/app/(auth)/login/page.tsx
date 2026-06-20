@@ -46,7 +46,7 @@ export default function LoginPage() {
 					</div>
 
 					<div className="pt-2">
-						<Button type="submit">
+						<Button type="submit" glass>
 							Login
 						</Button>
 					</div>

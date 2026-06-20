@@ -21,7 +21,7 @@ const config: Config = {
           darkBtn: "#0B182E", 
         },
         glass: {
-          bg: "rgba(6, 18, 36, 0.4)",
+          bg: "rgba(0, 85, 164, 0.3)",
           border: "rgba(255, 255, 255, 0.06)",
         }
       },
