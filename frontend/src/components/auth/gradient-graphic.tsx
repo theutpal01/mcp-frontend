@@ -33,7 +33,7 @@ export function GradientGraphic({ views = "desktop", position = "bottom", isReve
       <div className={`absolute inset-x-0 h-12 bg-brand-yellow/10 blur-md ${isTop ? "top-0" : "bottom-0"}`} />
 
       {/* Unified container controlling layout direction based on top/bottom position */}
-      <div className={`w-full h-full gap-[5px] sm:gap-[7px] flex ${isTop ? "items-start" : "items-end"}`}>
+      <div className={`w-full h-full flex ${isTop ? "items-start" : "items-end"}`}>
         {bars.map((bar, index) => (
           <div
             key={index}
@@ -42,7 +42,7 @@ export function GradientGraphic({ views = "desktop", position = "bottom", isReve
               animationDuration: bar.duration,
             }}
             className={`
-              flex-1 rounded-xl animate-wave-fluid will-change-transform
+              flex-1 animate-wave-fluid will-change-transform
               ${isTop ? "origin-top bg-gradient-to-b" : "origin-bottom bg-gradient-to-t"}
               from-brand-yellow via-brand-blue to-transparent
               ${bar.height}

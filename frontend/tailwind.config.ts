@@ -23,9 +23,21 @@ const config: Config = {
         glass: {
           bg: "rgba(0, 85, 164, 0.3)",
           border: "rgba(255, 255, 255, 0.06)",
+        },
+        // Missing semantic status layout keys added here
+        status: {
+          negative: "#F87171", // Standardized alert/negative state
+          neutral: "#6B7280",  // Standardized neutral fallback state
+        },
+        // Unified UI palette tokens mapping cleanly across typography & indicators
+        ui: {
+          light: "#D1D5DB",     // Replaces legacy text-gray-300
+          primary: "#9CA3AF",   // Replaces legacy text-gray-400
+          neutral: "#6B7280",   // Replaces legacy text-gray-500
+          muted: "#4B5563",     // Replaces legacy text-gray-600
         }
       },
-	  
+      
       keyframes: {
         waveUp: {
           "0%, 100%": { transform: "scaleY(1)", filter: "brightness(100%) drop-shadow(0 0 10px rgba(0,123,255,0.2))" },
