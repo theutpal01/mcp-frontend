@@ -4,14 +4,15 @@ import React, { useState } from "react";
 import { Navigation } from "./navigation";
 import { DashboardWorkspace } from "./dashboard-workspace";
 import { ViewPlaceholder } from "./view-placeholder";
+import { UserOut } from "@/types/api";
 
 interface DashboardViewProps {
-  userEmail?: string;
+  user: UserOut | null;
   onLogout?: () => void;
   glassLayout?: boolean;
 }
 
-export function DashboardView({ userEmail = "user.john@gmail.com", onLogout, glassLayout = true }: DashboardViewProps) {
+export function DashboardView({ user = null, onLogout, glassLayout = true }: DashboardViewProps) {
   const [activeTab, setActiveTab] = useState("Dashboard");
 
   return (
@@ -21,7 +22,7 @@ export function DashboardView({ userEmail = "user.john@gmail.com", onLogout, gla
       <Navigation 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        userEmail={userEmail} 
+        userEmail={user?.email || ""} 
         onLogout={onLogout} 
       />
 
@@ -34,7 +35,7 @@ export function DashboardView({ userEmail = "user.john@gmail.com", onLogout, gla
         {activeTab === "Dashboard" ? (
           <DashboardWorkspace 
             glassLayout={glassLayout} 
-            userEmail={userEmail} 
+            user={user} 
           />
         ) : (
           <ViewPlaceholder title={activeTab} />

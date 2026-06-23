@@ -5,13 +5,14 @@ import { Plus, Plug, Award, Sparkles, CloudLightning, ArrowRight } from "lucide-
 import { Button } from "../ui/button";
 import { MetricCard } from "./metric-card";
 import { ProjectCard } from "./project-card";
+import { UserOut } from "@/types/api";
 
 interface DashboardWorkspaceProps {
   glassLayout: boolean;
-  userEmail: string;
+  user: UserOut | null;
 }
 
-export function DashboardWorkspace({ glassLayout, userEmail }: DashboardWorkspaceProps) {
+export function DashboardWorkspace({ glassLayout, user }: DashboardWorkspaceProps) {
   const metrics = [
     { title: "Total MCPs", value: "24", change: "+3 this week", changeType: "positive" as const, icon: <Plug className="w-4 h-4 text-brand-yellow" /> },
     { title: "Average Score", value: "76", change: "from 61 last month", changeType: "neutral" as const, icon: <Award className="w-4 h-4 text-brand-yellow" /> },
@@ -32,7 +33,7 @@ export function DashboardWorkspace({ glassLayout, userEmail }: DashboardWorkspac
       <div className="flex justify-between md:justify-end items-center gap-4 relative z-10">
         <div className="md:hidden flex flex-col">
           <h1 className="text-xl font-bold tracking-tight text-white">PlugFit</h1>
-          <p className="text-xs text-ui-primary font-mono truncate max-w-[150px]">{userEmail}</p>
+          <p className="text-xs text-ui-primary font-mono truncate max-w-[150px]">{user?.email}</p>
         </div>
         
         <Button 

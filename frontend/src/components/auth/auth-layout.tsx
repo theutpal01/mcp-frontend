@@ -1,11 +1,12 @@
 import React from "react";
 import { GradientGraphic } from "./gradient-graphic";
 import { TiltCard } from "@/components/ui/tilt-card";
+import { MCPContextNexusBackground } from "./reactive-background";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="min-h-screen bg-background flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-16 gap-8 lg:gap-12 overflow-hidden select-none">
-
+		<div className="min-h-screen relative  flex flex-col lg:flex-row items-center justify-center p-4 sm:p-6 lg:p-16 gap-8 lg:gap-12 overflow-hidden select-none">
+			<MCPContextNexusBackground />
 			{/* <div className="absolute hidden lg:block inset-x-0 bottom-0 h-full w-full opacity-50">
 				<GradientGraphic position="bottom" isReversed={false} />
 			</div> */}
