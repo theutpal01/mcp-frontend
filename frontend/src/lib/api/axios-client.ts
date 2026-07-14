@@ -1,39 +1,34 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8067";
-
-/**
- * Server-Side Client Configuration
- * To be used explicitly inside Server Components, Server Actions or Route Handlers
- */
-export const createServerApiClient = (token?: string): AxiosInstance => {
-  return axios.create({
-    baseURL: BACKEND_URL,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-};
-
-/**
- * Client-Side Proxy Instance
- * Targets internal Next BFF endpoint route handlers to maintain absolute token obfuscation
- */
-export const api = axios.create({
+const apiInstance = axios.create({
   baseURL: "/api/proxy",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
-// Polyfills clean interception logic if client components require automatic dynamic state mapping
-api.interceptors.response.use(
-  (response) => response,
+/** 401 → silently refresh the session, then retry */
+apiInstance.interceptors.response.use(
+  (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
-      // Logic placeholder for global event bus redirection or trigger authentication states
+    const status = error.response?.status;
+    const url = error.config?.url ?? "";
+
+    // Don't refresh on auth endpoints (would infinite-loop)
+    const isSafeRoute = !url.startsWith("/auth/login") && !url.startsWith("/auth/register");
+    if (status === 401 && isSafeRoute) {
+      try {
+        const { AuthService } = await import("@/services/auth.service");
+        await AuthService.refresh();
+        return apiInstance.request(error.config);
+      } catch {
+        // Refresh rejected — let 401 propagate
+      }
     }
     return Promise.reject(error);
   }
 );
+
+// Named exports for different import styles used across the codebase
+export const clientApi = apiInstance;
+/** @deprecated use clientApi instead */
+export const api = apiInstance;

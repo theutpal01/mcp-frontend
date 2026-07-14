@@ -1,41 +1,38 @@
+"use client";
+
 import React from "react";
-import { DashboardCard } from "../ui/dashboard-card";
 
 interface ProjectCardProps {
   name: string;
   age: string;
   count: string;
-  glass?: boolean;
 }
 
-export function ProjectCard({ name, age, count, glass }: ProjectCardProps) {
+export function ProjectCard({ name, age, count }: ProjectCardProps) {
   return (
-    <DashboardCard 
-      glass={glass} 
-      className="py-4hover:border-brand-blue/30 duration-300 transition-colors cursor-pointer"
-    >
-      {/* Primary Scope */}
+    <div className="min-w-[230px] max-w-[230px] bg-[#03122f] border border-blue-900/30 rounded-3xl p-6 flex flex-col justify-between snap-start transition-all duration-300 hover:border-blue-500/30 group cursor-pointer shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+      {/* Top Meta Area */}
       <div className="space-y-1">
-        <span className="text-[10px] font-mono text-brand-blue uppercase tracking-wider block">
+        <span className="text-xs font-mono font-medium tracking-wider text-blue-400/90 block">
           Project:
         </span>
-        <h3 className="text-base font-medium text-white tracking-wide truncate font-sans">
+        <h4 className="text-2xl font-bold tracking-tight text-white font-sans truncate leading-tight group-hover:text-blue-300 transition-colors">
           {name}
-        </h3>
-        <p className="text-[11px] text-ui-neutral font-sans">
+        </h4>
+        <span className="text-xs font-mono text-blue-400/50 block pt-0.5">
           Created: {age}
-        </p>
+        </span>
       </div>
-      
-      {/* Telemetry Metrics Split */}
-      <div className="pt-2 border-t border-glass-border/40 w-full">
-        <span className="text-xs text-brand-yellow font-medium font-mono block">
+
+      {/* Bottom Counter Area */}
+      <div className="mt-8 pt-2">
+        <span className="text-base font-bold text-yellow-400 tracking-wide block font-mono">
           {count}
         </span>
-        <p className="text-[10px] text-ui-muted mt-0.5 font-sans">
-          Latest update: {age}
-        </p>
+        <span className="text-[10px] font-mono text-blue-400/40 block mt-0.5 uppercase tracking-tight">
+          lastest added: {age}
+        </span>
       </div>
-    </DashboardCard>
+    </div>
   );
 }
