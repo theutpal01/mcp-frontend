@@ -53,4 +53,20 @@ export const ServerService = {
     const { data } = await clientApi.post<JobOut>(`/servers/${id}/reprocess`);
     return data;
   },
+
+  async updateServerVisibility(id: string, isPublic: boolean): Promise<void> {
+    console.log("[TODO] ServerService.updateServerVisibility - Endpoint pending backend implementation:", { id, isPublic });
+  },
+
+  async addMcpToProject(projectId: string, payload: any): Promise<void> {
+    console.log("[TODO] ServerService.addMcpToProject - Endpoint pending backend implementation:", { projectId, payload });
+  },
+
+  async runMcpEvaluation(projectId: string, mcpId: string): Promise<void> {
+    console.log("[TODO] ServerService.runMcpEvaluation - Endpoint pending backend implementation:", { projectId, mcpId });
+  },
+
+  async deleteMcpFromProject(projectId: string, mcpId: string): Promise<void> {
+    console.log("[TODO] ServerService.deleteMcpFromProject - Endpoint pending backend implementation:", { projectId, mcpId });
+  },
 };

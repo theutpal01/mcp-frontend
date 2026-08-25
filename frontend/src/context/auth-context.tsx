@@ -15,6 +15,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const DEV_MOCK_USER: UserOut = {
+    id: "dev-00000000-0000-0000-0000-000000000001",
+    name: "Dev User",
+    email: "dev@plugfit.local",
+    slug: "dev-user",
+    plan: "free",
+    is_active: true,
+    is_email_verified: true,
+    created_at: new Date().toISOString(),
+};
+
+const IS_DEV = process.env.NODE_ENV === "development";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<UserOut | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,6 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     const refreshUser = async () => {
+        if (IS_DEV) {
+            setUser(DEV_MOCK_USER);
+            setIsLoading(false);
+            return;
+        }
         try {
             // Checks if a token cookie exists by testing against the GET /auth/me route
             const userData = await AuthService.getMe();

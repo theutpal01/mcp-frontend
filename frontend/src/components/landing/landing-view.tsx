@@ -1,10 +1,15 @@
+// components/landing/landing-view.tsx
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { Navbar } from "./navbar";
 import { ScoreSimulator } from "./score-simulator";
+import { ProblemSection } from "./problem-section";
 import { FeaturesGrid } from "./features-grid";
-import { GradientGraphic } from "@/components/auth/gradient-graphic";
-import { ArrowRight } from "lucide-react";
+import { RegistryPreview } from "./registry-preview";
+import { CtaBanner } from "./cta-banner";
+import { MCPContextNexusBackground } from "@/components/auth/reactive-background";
 
 interface LandingViewProps {
   onNavigateToAuth?: () => void;
@@ -12,63 +17,73 @@ interface LandingViewProps {
 
 export function LandingView({ onNavigateToAuth }: LandingViewProps) {
   return (
-    <>
+    <div id="home" className="min-h-screen text-white flex flex-col font-sans select-none antialiased w-full relative overflow-x-hidden">
+      {/* Interactive Moving Waves Background Canvas */}
+      <MCPContextNexusBackground />
+
+      {/* Top Navbar */}
       <Navbar onAuthClick={onNavigateToAuth} />
 
-      {/* HERO SECTION */}
-      <header className="pt-36 pb-24 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center flex-grow">
-        <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-          {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#007BFF]/5 border border-[#007BFF]/10 text-xs font-mono text-[#007BFF]">
-            <span>Optimization Protocol F-01 Engine Standard</span>
-          </div> */}
-          <h1 className="text-4xl sm:text-5xl xl:text-6xl font-medium tracking-tight text-[#FBEB4D] leading-[1.1]">
-            MCPs that AI Agents <br /> can actually use.
+      {/* HERO SECTION - Configured with wider max-w-7xl/1440px constraints to prevent empty side space on 1920x1080 screens */}
+      <header className="pt-28 sm:pt-36 pb-16 max-w-7xl mx-auto px-6 xl:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center w-full">
+        
+        {/* Hero Left Column */}
+        <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          {/* Main Hero Title */}
+          <h1 className="text-3xl sm:text-5xl xl:text-6xl font-bold tracking-wide font-sans leading-tight">
+            <span className="text-[#FBEB4D] block">MCPs That AI</span>
+            <span className="text-[#00bfff] block">Agents Can</span>
+            <span className="text-[#00bfff] block">Actually Use</span>
           </h1>
-          <p className="text-gray-400 max-w-xl mx-auto lg:mx-0 text-sm sm:text-base leading-relaxed">
-            Stop feeding agents auto-generated, cluttered plugs. PlugFit ingests API schemas, automatically purges duplicate declarations, and certifies reliability via autonomous validation loops.
+
+          {/* Subtitle Paragraph */}
+          <p className="text-gray-300 max-w-lg mx-auto lg:mx-0 text-sm sm:text-base font-sans leading-relaxed">
+            Upload an MCP sever and PlugFit automatically cleans, evaluates, optimizes and deploys it.
           </p>
+
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
-            <Link href="/signup"
-              className="w-full sm:w-auto px-6 h-12 flex items-center justify-center gap-2 bg-[#0B182E] text-[#FBEB4D] font-medium border border-glass-border rounded-xl hover:border-[#007BFF]/30 transition-all shadow-lg group"
+            <Link
+              href="/signup"
+              className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-[#FBEB4D] text-[#030d1c] font-bold text-sm hover:bg-yellow-300 transition-all duration-200 shadow-lg text-center"
             >
-              Optimize Your API Spec
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Start Optimizing
             </Link>
+            <button
+              onClick={() => {}}
+              className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-[#041630]/90 border border-[#FBEB4D]/80 text-[#FBEB4D] font-bold text-sm hover:bg-blue-950 transition-all duration-200 shadow-lg text-center cursor-pointer"
+            >
+              Watch Demo
+            </button>
           </div>
         </div>
 
-        <div className="lg:col-span-6 w-full max-w-xl mx-auto">
+        {/* Hero Right Column: 3D Score Sphere Graphic */}
+        <div className="lg:col-span-5 w-full max-w-md mx-auto flex justify-center">
           <ScoreSimulator />
         </div>
+
       </header>
 
-      <main id="features" className="border-y border-glass-border bg-black/10">
+      {/* MAIN SECTIONS */}
+      <main className="w-full space-y-8 overflow-x-hidden">
+        {/* THE PROBLEM SECTION */}
+        <ProblemSection />
+
+        {/* FEATURES SECTION */}
         <FeaturesGrid />
+
+        {/* REGISTRY PREVIEW SECTION */}
+        <RegistryPreview />
+
+        {/* OPTIMIZE YOUR MCP TODAY BANNER */}
+        <CtaBanner />
       </main>
 
       {/* FOOTER */}
-      <footer className="relative h-[65vh] bg-[#05080E] border-t border-glass-border pt-16 pb-12 overflow-hidden mt-auto">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-10 relative z-10 mb-16">
-          <div className="col-span-2 space-y-4">
-            <span className="font-bold text-white tracking-wide text-lg">PlugFit</span>
-            <p className="text-xs text-gray-500 max-w-xs leading-relaxed">
-              The continuous evaluation and optimization runtime layer engineered exclusively for Model Context Protocol servers.
-            </p>
-          </div>
-          {["Platform", "Registry", "System"].map((title, i) => (
-            <div key={i} className="space-y-3 font-mono text-xs">
-              <h4 className="text-[11px] uppercase tracking-widest text-[#007BFF] font-semibold">{title}</h4>
-              <ul className="space-y-2 text-gray-400 font-sans text-xs">
-                <li><a href="#" className="hover:text-[#FBEB4D] transition">Sub-System Link</a></li>
-                <li><a href="#" className="hover:text-[#FBEB4D] transition">Documentation</a></li>
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-x-0 bottom-0 h-[125%] pointer-events-none opacity-50">
-          <GradientGraphic/>
-        </div>
+      <footer className="w-full py-8 border-t border-blue-900/40 text-center text-xs text-blue-400/50 font-sans">
+        <p>© 2026 PlugFit. All rights reserved.</p>
       </footer>
-    </>
+    </div>
   );
 }

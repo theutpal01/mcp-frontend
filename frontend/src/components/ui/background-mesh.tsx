@@ -1,3 +1,4 @@
+// components/ui/background-mesh.tsx
 import React from "react";
 
 interface BackgroundMeshProps {
@@ -7,9 +8,8 @@ interface BackgroundMeshProps {
 
 export function BackgroundMesh({ children, showGlows = true }: BackgroundMeshProps) {
   return (
-    <div className="min-h-screen bg-[#030508] text-white selection:bg-[#007BFF]/20 overflow-x-hidden font-sans relative antialiased">
-      
-      {/* CENTRALIZED CYBER TECH-GRID DRIFT MESH */}
+    <div className="min-h-screen w-full bg-[#030508] text-white selection:bg-[#007BFF]/20 font-sans relative antialiased overflow-x-hidden">
+      {/* CENTRALIZED TECH-GRID DRIFT MESH */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02] overflow-hidden">
         <div 
           className="w-full h-[200%] animate-grid-scroll"
@@ -29,7 +29,7 @@ export function BackgroundMesh({ children, showGlows = true }: BackgroundMeshPro
       )}
 
       {/* CONTENT LAYER */}
-      <div className="relative z-10 w-full min-h-screen flex flex-col">
+      <div className="relative z-10 w-full min-h-screen flex flex-col overflow-x-hidden">
         {children}
       </div>
     </div>

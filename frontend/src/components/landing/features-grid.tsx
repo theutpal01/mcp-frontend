@@ -1,70 +1,73 @@
-import { TiltCard } from "@/components/ui/tilt-card";
-import { Layers, Sparkles, Terminal, Activity, RotateCcw, CloudLightning } from "lucide-react";
+// components/landing/features-grid.tsx
+"use client";
+
+import React from "react";
 
 export function FeaturesGrid() {
-  // Mapping explicit capabilities pulled directly from project schema criteria
-  const tools = [
+  const features = [
     {
-      icon: <Layers className="w-5 h-5 text-brand-blue" />,
-      title: "Universal Ingest Architecture",
-      desc: "Accept OpenAPI specification docs, Swagger 2.x, or active live MCP server URLs to yield standardized canonical structures flawlessly[cite: 2].",
+      num: "1",
+      title: "Universal Ingest",
+      desc: "OpenAPI Swagger MCP URLs Tool manifest",
     },
     {
-      icon: <Sparkles className="w-5 h-5 text-brand-blue" />,
-      title: "Intelligent LLM Tuning",
-      desc: "Automatically merges duplicate tools, cleans ambiguous endpoint definitions, and crafts crisp instructions context-built for AI model execution[cite: 2].",
+      num: "2",
+      title: "AI Cleaning",
+      desc: "Merges duplicates. Improves descriptions.",
     },
     {
-      icon: <Terminal className="w-5 h-5 text-brand-blue" />,
-      title: "Automated Evaluation Harness",
-      desc: "Spawns automated native agent loops to rigorously isolate tool behavior, testing trajectories before deployment configurations solidify.",
+      num: "3",
+      title: "AI Test Generation",
+      desc: "Automatically creates evaluation tasks.",
     },
     {
-      icon: <Activity className="w-5 h-5 text-brand-blue" />,
-      title: "Adversarial Test Matrices",
-      desc: "Auto-generates task paths along with deceptive validation traps to score models objectively without demanding brittle manual templates.",
+      num: "4",
+      title: "Agent Evaluation",
+      desc: "Measures actual usability",
     },
     {
-      icon: <RotateCcw className="w-5 h-5 text-brand-blue" />,
-      title: "Self-Healing Convergence Loops",
-      desc: "Pipes failure transcript sequences right back into correction cycles, fine-tuning until execution scores hit verified stability plateaus.",
+      num: "5",
+      title: "Community Connect",
+      desc: "Connect with other builders publishing MCPs on PlugFit",
     },
     {
-      icon: <CloudLightning className="w-5 h-5 text-brand-blue" />,
-      title: "Instant Proxy Deployment",
-      desc: "Host perfectly sanitized manifests over standard stdio frameworks, cleanly routing execution parameters back safely to original APIs.",
+      num: "6",
+      title: "One Click Deployment",
+      desc: "Deploy optimized MCPs",
     },
   ];
 
   return (
-    <section className="py-24 max-w-7xl mx-auto px-6">
-      <div className="text-center max-w-2xl mx-auto mb-16">
-        <h2 className="text-3xl font-semibold text-brand-yellow tracking-tight sm:text-4xl">
-          Engineered for Clean Agent Execution
-        </h2>
-        <p className="mt-4 text-brand-blue font-medium text-sm sm:text-base">
-          Converting an API to an MCP endpoint takes seconds. PlugFit eliminates the overlapping tools and vague manifests that cause model execution failures[cite: 2].
-        </p>
-      </div>
+    <section id="features" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 select-none w-full">
+      {/* Section Title */}
+      <h2 className="text-2xl sm:text-3xl font-bold text-[#FBEB4D] tracking-widest uppercase font-sans text-center mb-10">
+        Features
+      </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map((item, idx) => (
-          <TiltCard
-            key={idx}
-            maxRotation={6}
-            scale={1.02}
-            className="bg-glass-bg backdrop-blur-xl border border-glass-border p-6 rounded-2xl flex flex-col space-y-4"
+      {/* 6 Feature Capsule Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl mx-auto">
+        {features.map((item) => (
+          <div
+            key={item.num}
+            className="flex h-24 rounded-full border border-blue-900/40 overflow-hidden bg-[#041630]/30 hover:border-blue-500/40 transition-all duration-200 shadow-lg"
           >
-            <div className="p-2.5 bg-brand-blue/5 rounded-xl border border-brand-blue/10 w-fit">
-              {item.icon}
+            {/* Left Block: Rounded Cap containing Yellow Number */}
+            <div className="w-20 sm:w-24 bg-[#052857] flex items-center justify-center border-r border-blue-900/40 shrink-0">
+              <span className="text-[#FBEB4D] font-extrabold text-3xl font-sans">
+                {item.num}
+              </span>
             </div>
-            <h3 className="text-lg font-medium text-brand-yellow">
-              {item.title}
-            </h3>
-            <p className="text-gray-400 text-sm leading-relaxed flex-grow">
-              {item.desc}
-            </p>
-          </TiltCard>
+
+            {/* Right Block: Text Content */}
+            <div className="flex-1 flex flex-col justify-center px-6 py-2">
+              <h3 className="text-sm sm:text-base font-bold text-[#FBEB4D] font-sans">
+                {item.title}
+              </h3>
+              <p className="text-gray-300 text-xs sm:text-sm font-sans mt-0.5 leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          </div>
         ))}
       </div>
     </section>

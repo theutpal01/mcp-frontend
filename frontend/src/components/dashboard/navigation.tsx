@@ -14,19 +14,20 @@ interface NavigationProps {
 
 export function Navigation({ activeTab, setActiveTab, user, onLogout }: NavigationProps) {
   const mobileNavItems = [
-    { name: "Projects", icon: <FolderGit2 className="w-5 h-5" />, isCenter: false },
-    { name: "Explore", icon: <Globe className="w-5 h-5" />, isCenter: false },
+    { name: "View my projects", icon: <FolderGit2 className="w-5 h-5" />, isCenter: false },
+    { name: "View others", icon: <Globe className="w-5 h-5" />, isCenter: false },
     { name: "Dashboard", icon: <LayoutDashboard className="w-5.5 h-5.5" />, isCenter: true },
     { name: "Profile", icon: <User className="w-5 h-5" />, isCenter: false },
     { name: "Settings", icon: <Settings className="w-5 h-5" />, isCenter: false },
   ];
 
   const desktopNavItems = [
-    mobileNavItems[2], // Dashboard
-    mobileNavItems[0], // Projects
-    mobileNavItems[1], // Explore
-    mobileNavItems[3], // Profile
-    mobileNavItems[4], // Settings
+    { name: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
+    { name: "View my projects", icon: <FolderGit2 className="w-5 h-5" /> },
+    { name: "View others", icon: <Globe className="w-5 h-5" /> },
+    { name: "Profile", icon: <User className="w-5 h-5" /> },
+    { name: "View others profile", icon: <User className="w-5 h-5" /> },
+    { name: "Settings", icon: <Settings className="w-5 h-5" /> },
   ];
 
   const themeStyles = {
@@ -57,7 +58,9 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
 
           <nav className="space-y-1.5">
             {desktopNavItems.map((item) => {
-              const isActive = activeTab === item.name;
+              const isActive =
+                activeTab === item.name ||
+                (item.name === "View my projects" && activeTab.startsWith("project-detail"));
               return (
                 <button
                   key={item.name}
