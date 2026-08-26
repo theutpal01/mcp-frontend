@@ -20,7 +20,7 @@ export function LandingView({ onNavigateToAuth }: LandingViewProps) {
     <div id="home" className="min-h-screen text-white flex flex-col font-sans select-none antialiased w-full relative overflow-x-hidden">
       <MCPContextNexusBackground />
 
-      <Navbar onAuthClick={onNavigateToAuth} />
+      <Navbar />
 
       {/* HERO SECTION */}
       <header className="pt-36 sm:pt-44 lg:pt-48 pb-12 sm:pb-16 max-w-7xl mx-auto px-5 sm:px-8 xl:px-12 grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-12 lg:gap-16 items-center w-full">
