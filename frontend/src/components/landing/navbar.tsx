@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-export function Navbar({onAuthClick}: {onAuthClick?: () => void}) {
+export function Navbar() {
 	return (
 		<nav className="fixed top-0 inset-x-0 h-16 border-b border-glass-border bg-background/60 backdrop-blur-md z-50">
 			<div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">

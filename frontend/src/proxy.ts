@@ -11,7 +11,7 @@ export function proxy(request: NextRequest) {
         pathname.startsWith("/login") || 
         pathname.startsWith("/signup") || 
         pathname.startsWith("/verify-email") ||
-		pathname.startsWith("/forget-password");
+        pathname.startsWith("/forgot-password");
 
     // Targets protected core system assets
     const isProtectedRoute = 
@@ -22,8 +22,14 @@ export function proxy(request: NextRequest) {
     /**
      * CASE 1: Session Token Exists & User hits Auth Portals (/login, /signup, etc.)
      * Action: Bypass authorization screens completely and route directly to system core.
+     *
+     * `reauth=1` marks a dead-session bounce coming from the client guard
+     * (cookie present but token invalid). Without this exemption we'd ping-pong:
+     * proxy forces /login → /dashboard, guard sees no valid session → /login…
+     * trapping the user on the login page forever.
      */
-    if (token && isAuthRoute) {
+    const isReauthBounce = request.nextUrl.searchParams.get("reauth") === "1";
+    if (token && isAuthRoute && !isReauthBounce) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
@@ -54,6 +60,7 @@ export const config = {
         "/mcp/:path*",     // Matches model context protocol streams
         "/login",
         "/signup",
-        "/verify-email"
+        "/verify-email",
+        "/forgot-password"
     ],
 };

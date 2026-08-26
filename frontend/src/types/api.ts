@@ -78,7 +78,7 @@ export interface JobOut {
   server_id: string;
   status: string;
   stage: string;
-  logs: Record<string, any>[];
+  logs: Record<string, unknown>[];
   error: string | null;
   created_at: string;
   updated_at: string;
@@ -89,6 +89,6 @@ export interface HTTPValidationError {
     loc: (string | number)[];
     msg: string;
     type: string;
-    ctx?: Record<string, any>;
+    ctx?: Record<string, unknown>;
   }>;
 }

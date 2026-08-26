@@ -46,13 +46,19 @@ const handler = async (
       body: reqBody,
       cache: "no-store",
     });
-  } catch (err: any) {
-    console.error(`[PROXY] fetch error: ${err.message}`);
-    return NextResponse.json({ error: "Gateway error", details: err.message }, { status: 502 });
+  } catch (err) {
+    if (!isProduction) {
+      console.error(`[PROXY] fetch error: ${err instanceof Error ? err.message : String(err)}`);
+    }
+    // Never echo internal error details to the client — avoids info disclosure
+    return NextResponse.json({ error: "Gateway error" }, { status: 502 });
   }
 
   const isNoContent = backendRes.status === 204;
-  const resBody = isNoContent ? null : await backendRes.blob();
+  // Read the body ONCE as text. The previous blob()+clone().text() combo threw
+  // "Cannot clone a disturbed Response" (body already consumed), silently
+  // killing token extraction — the access cookie was never set on login.
+  const resBody = isNoContent ? null : await backendRes.text();
 
   const clientResponse = new NextResponse(resBody, {
     status: backendRes.status,
@@ -79,8 +85,8 @@ const handler = async (
   // On login success — extract and store access token in a httpOnly cookie
   if (pathStr === "auth/login" && backendRes.status === 200 && resBody) {
     try {
-      // Clone the stream so the body stays intact for the NextResponse
-      const tokenObj = JSON.parse(await backendRes.clone().text());
+      // Body was captured as text above — no clone needed
+      const tokenObj = JSON.parse(resBody);
       if (tokenObj.access_token) {
         clientResponse.cookies.set("plugfit_access", tokenObj.access_token, {
           httpOnly: true,
@@ -89,8 +95,16 @@ const handler = async (
           path: "/",
           maxAge: 60 * 60 * 24, // 24 h
         });
+        if (!isProduction) console.log("[PROXY]     plugfit_access cookie set from login response");
+      } else if (!isProduction) {
+        console.log("[PROXY]     login response had NO access_token field — keys:", Object.keys(tokenObj));
       }
-    } catch {/* token parsing failed — ignore */}
+    } catch (err) {
+      if (!isProduction) {
+        console.log("[PROXY]     failed to parse login body for token extraction:",
+          err instanceof Error ? err.message : err);
+      }
+    }
   }
 
   // On logout — scrub client-side auth cookies
@@ -107,4 +121,5 @@ const handler = async (
 export const GET = handler;
 export const POST = handler;
 export const PUT = handler;
+export const PATCH = handler;
 export const DELETE = handler;

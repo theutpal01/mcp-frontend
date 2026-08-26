@@ -1,7 +1,7 @@
 "use client";
 
 import { toast as nativeToast } from "sonner";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 
 export type ToastType = "info" | "success" | "error" | "protocol";
 export type ToastPosition = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-center" | "bottom-center";
@@ -107,28 +107,35 @@ const ToastCard = ({ id, type, title, message }: CustomToastProps) => {
 
 // --- BATTLE-TESTED EXPORTED HOOK INTERFACE ---
 export function useToast() {
-  const triggerCustomToast = (
-    type: ToastType,
-    title: string,
-    message?: string,
-    position: ToastPosition = "bottom-right",
-    duration: number = 4000
-  ) => {
-    nativeToast.custom(
-      (id) => React.createElement(ToastCard, { id, type, title, message }),
-      { position, duration }
-    );
-  };
+  // Stable across renders — safe to use in effect dependency arrays
+  const triggerCustomToast = useCallback(
+    (
+      type: ToastType,
+      title: string,
+      message?: string,
+      position: ToastPosition = "bottom-right",
+      duration: number = 4000
+    ) => {
+      nativeToast.custom(
+        (id) => React.createElement(ToastCard, { id, type, title, message }),
+        { position, duration }
+      );
+    },
+    []
+  );
 
-  return {
-    info: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
-      triggerCustomToast("info", title, message, position, duration),
-    success: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
-      triggerCustomToast("success", title, message, position, duration),
-    error: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
-      triggerCustomToast("error", title, message, position, duration),
-    protocol: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
-      triggerCustomToast("protocol", title, message, position, duration),
-    dismissAll: () => nativeToast.dismiss(),
-  };
+  return useMemo(
+    () => ({
+      info: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
+        triggerCustomToast("info", title, message, position, duration),
+      success: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
+        triggerCustomToast("success", title, message, position, duration),
+      error: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
+        triggerCustomToast("error", title, message, position, duration),
+      protocol: (title: string, message?: string, position?: ToastPosition, duration?: number) =>
+        triggerCustomToast("protocol", title, message, position, duration),
+      dismissAll: () => nativeToast.dismiss(),
+    }),
+    [triggerCustomToast]
+  );
 }

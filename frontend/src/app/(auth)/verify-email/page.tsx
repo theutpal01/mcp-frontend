@@ -2,26 +2,29 @@
 
 import React, { useState, useEffect, Suspense, useRef } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { GradientGraphic } from "@/components/auth/gradient-graphic";
 import { useToast } from "@/hooks/use-toast";
 import { AuthService } from "@/services/auth.service";
+import { useAuth } from "@/context/auth-context";
 
 function VerifyEmailContent() {
     const searchParams = useSearchParams();
-    const router = useRouter();
     const toast = useToast();
+    const { refreshUser } = useAuth();
 
     // Captures the token passed by the email redirect link
     const token = searchParams.get("token");
+    // Signup carries the registered address so the resend form comes pre-filled
+    const signupEmail = searchParams.get("email") ?? "";
 
     // Prevents duplicate token ingestion threads during strict-mode or render loops
     const verificationStarted = useRef(false);
 
     const [isResending, setIsResending] = useState(false);
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(signupEmail);
     const [isVerifying, setIsVerifying] = useState(!!token);
     const [verificationStatus, setVerificationStatus] = useState<"idle" | "success" | "error">(
         token ? "idle" : "idle"
@@ -47,7 +50,10 @@ function VerifyEmailContent() {
                     "Your email address has been verified successfully.",
                     "bottom-right"
                 );
-            } catch (err) {
+                // Re-hydrate session state — if the backend established a
+                // session during verification, the app picks it up immediately.
+                void refreshUser();
+            } catch {
                 setVerificationStatus("error");
                 toast.error(
                     "Verification Failed",
@@ -60,7 +66,7 @@ function VerifyEmailContent() {
         };
 
         verifyTokenOnBackend();
-    }, [token]); // Removed the unstable 'toast' reference to prevent loop triggers
+    }, [token, toast, refreshUser]); // both stable (memoized), safe as dependencies
 
     // Handles POST /auth/resend-verification
     const handleResend = async (e: React.FormEvent) => {
@@ -81,7 +87,7 @@ function VerifyEmailContent() {
                 "A fresh verification token link has been routed to your inbox.",
                 "bottom-right"
             );
-        } catch (error) {
+        } catch {
             toast.error("Resend Failed", "Unable to dispatch verification email. Please try again later.", "bottom-right");
             setIsResending(false);
         }
@@ -133,7 +139,12 @@ function VerifyEmailContent() {
                             </p>
                         </div>
                         <Button
-                            onClick={() => router.push("/dashboard")}
+                            onClick={() => {
+                                // HARD navigation — same rationale as post-login:
+                                // soft push across a proxy redirect can silently abort.
+                                // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- hard nav is intentional, see comment above
+                                window.location.assign("/dashboard");
+                            }}
                             className="w-full mt-4 bg-brand-yellow hover:bg-brand-yellow/90 text-black text-xs font-bold tracking-wide h-11 rounded-xl transition-all duration-150 shadow-[0_4px_20px_rgba(251,235,77,0.15)]"
                         >
                             Launch Workspace

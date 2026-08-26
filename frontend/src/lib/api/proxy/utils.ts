@@ -1,5 +1,3 @@
-import { NextResponse } from "next/server";
-
 export interface ParsedSetCookie {
   name: string;
   value: string;

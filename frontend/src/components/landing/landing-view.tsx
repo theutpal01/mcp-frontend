@@ -10,10 +10,10 @@ interface LandingViewProps {
   onNavigateToAuth?: () => void;
 }
 
-export function LandingView({ onNavigateToAuth }: LandingViewProps) {
+export function LandingView({ }: LandingViewProps) {
   return (
     <>
-      <Navbar onAuthClick={onNavigateToAuth} />
+      <Navbar />
 
       {/* HERO SECTION */}
       <header className="pt-36 pb-24 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center flex-grow">

@@ -1,18 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthService } from "@/services/auth.service";
+import { getApiErrorDetail, isNetworkError } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
-export default function LoginPage() {
+/**
+ * Only allow same-origin relative paths as post-login destinations.
+ * Blocks open-redirect vectors like "https://evil.com" or "//evil.com".
+ */
+function sanitizeCallbackUrl(raw: string | null): string {
+	if (raw && raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("\\")) {
+		return raw;
+	}
+	return "/dashboard";
+}
+
+function LoginContent() {
 	const toast = useToast();
-	const router = useRouter();
+	const searchParams = useSearchParams();
+	const callbackUrl = sanitizeCallbackUrl(searchParams.get("callbackUrl"));
 
 	const [formData, setFormData] = useState({
 		email: "",
@@ -75,29 +88,18 @@ export default function LoginPage() {
 				"bottom-right"
 			);
 
-			// Establish secure application routing state.
-			// When email verification is complete, your backend or verify page should auto-write 
-			// the auth token/cookie so returning to or accessing the platform skips this portal entirely.
-			router.push("/dashboard");
-			router.refresh();
-		} catch (error: any) {
-			let extractedMessage = "Invalid credentials. Please verify your identity data and try again.";
+			// Establish secure application routing state — return to the page the
+			// user originally requested (proxy.ts sets callbackUrl), else /dashboard.
+			// HARD navigation on purpose: router.push() across a proxy/middleware
+			// redirect can silently abort, stranding the user on /login. A full
+			// document request lets proxy.ts re-evaluate with the fresh cookie.
+			window.location.assign(callbackUrl);
+		} catch (error: unknown) {
+			const detail = getApiErrorDetail(error);
+			let extractedMessage =
+				detail ?? "Invalid credentials. Please verify your identity data and try again.";
 
-			if (error.response?.data?.detail) {
-				const detail = error.response.data.detail;
-
-				// Handle complex structured FastAPI/OpenAPI 422 array errors cleanly
-				if (Array.isArray(detail)) {
-					extractedMessage = detail
-						.map((err: any) => {
-							const field = err.loc ? err.loc[err.loc.length - 1] : "field";
-							return `${field.toUpperCase()}: ${err.msg}`;
-						})
-						.join(" | ");
-				} else if (typeof detail === "string") {
-					extractedMessage = detail;
-				}
-			} else if (error.message && !error.response) {
+			if (!detail && isNetworkError(error)) {
 				// Handle total offline execution / server dropout anomalies
 				extractedMessage = "Gateway connection failure. Check your local connection stream.";
 			}
@@ -210,7 +212,7 @@ export default function LoginPage() {
 
 				{/* Secure Route Alternate Gateway Option Footer */}
 				<p className="text-sm text-brand-blue mt-6">
-					Don't have an account?{" "}
+					Don&apos;t have an account?{" "}
 					<Link
 						href={isLoading ? "#" : "/signup"}
 						className={`text-brand-yellow hover:underline underline-offset-4 transition-all ${isLoading ? "opacity-30 cursor-not-allowed pointer-events-none" : ""
@@ -221,5 +223,18 @@ export default function LoginPage() {
 				</p>
 			</div>
 		</AuthLayout>
+	);
+}
+export default function LoginPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="min-h-screen flex items-center justify-center font-mono text-xs text-gray-500 tracking-widest">
+					CONNECTING SECURITY NETWORK PORT...
+				</div>
+			}
+		>
+			<LoginContent />
+		</Suspense>
 	);
 }

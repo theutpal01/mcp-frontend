@@ -1,12 +1,12 @@
 import { api } from "@/lib/api/axios-client";
 
 export const McpService = {
-  async postMcpPayload(tenantId: string, serverId: string, payload: any): Promise<any> {
+  async postMcpPayload(tenantId: string, serverId: string, payload: Record<string, unknown>): Promise<unknown> {
     const { data } = await api.post(`/mcp/${tenantId}/${serverId}`, payload);
     return data;
   },
 
-  async getMcpInfo(tenantId: string, serverId: string): Promise<any> {
+  async getMcpInfo(tenantId: string, serverId: string): Promise<unknown> {
     const { data } = await api.get(`/mcp/${tenantId}/${serverId}/info`);
     return data;
   },

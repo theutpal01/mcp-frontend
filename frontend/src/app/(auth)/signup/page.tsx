@@ -8,6 +8,7 @@ import { AuthLayout } from "@/components/auth/auth-layout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AuthService } from "@/services/auth.service";
+import { getApiErrorDetail, isNetworkError } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 export default function SignupPage() {
@@ -34,7 +35,7 @@ export default function SignupPage() {
         // Basic structural email regex check before executing transmission
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(trimmedEmail)) {
-            toast.error("Validation Error", "Please provide a structurally valid email address address.", "bottom-right");
+            toast.error("Validation Error", "Please provide a structurally valid email address.", "bottom-right");
             return false;
         }
 
@@ -74,26 +75,15 @@ export default function SignupPage() {
                 "bottom-right"
             );
 
-            // Redirect user to the verification pipeline page
-            router.push("/verify-email");
-        } catch (error: any) {
-            let extractedMessage = "Invalid credentials. Please verify your data stream configuration and try again.";
-            
-            if (error.response?.data?.detail) {
-                const detail = error.response.data.detail;
-                
-                // Edge Case: Parse complex structured FastAPI/OpenAPI 422 array errors cleanly
-                if (Array.isArray(detail)) {
-                    extractedMessage = detail
-                        .map((err: any) => {
-                            const field = err.loc ? err.loc[err.loc.length - 1] : "field";
-                            return `${field.toUpperCase()}: ${err.msg}`;
-                        })
-                        .join(" | ");
-                } else if (typeof detail === "string") {
-                    extractedMessage = detail;
-                }
-            } else if (error.message && !error.response) {
+            // Redirect user to the verification pipeline page, carrying the
+            // email so the resend form is pre-filled (no retyping).
+            router.push(`/verify-email?email=${encodeURIComponent(validatedPayload.email)}`);
+        } catch (error: unknown) {
+            const detail = getApiErrorDetail(error);
+            let extractedMessage =
+                detail ?? "Invalid credentials. Please verify your data stream configuration and try again.";
+
+            if (!detail && isNetworkError(error)) {
                 // Edge Case: Handle network disconnection / gateway timeouts entirely
                 extractedMessage = "Network execution failure. Unable to reach security gateway.";
             }

@@ -1,31 +1,40 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { DashboardView } from "@/components/dashboard/dashboard-view";
-import { AuthService } from "@/services/auth.service";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/context/auth-context";
+import { useAuth, useRequireAuth } from "@/context/auth-context";
 
 export default function DashboardPage() {
-  const router = useRouter();
   const toast = useToast();
+  // Waits for session hydration, then bounces dead sessions to /login
+  // (proxy.ts only sees cookie presence — this covers expired tokens).
+  const { user, isLoading } = useRequireAuth();
   const auth = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="h-[100dvh] flex items-center justify-center gap-3 text-blue-400/60">
+        <LoadingSpinner size="sm" />
+        <span className="text-sm font-mono">Restoring your session...</span>
+      </div>
+    );
+  }
+
+  // Delegates to the shared AuthProvider logout — cookie scrubbing,
+  // state reset, and redirect all live in one place now.
   const handleLogout = async () => {
-        try {
-            await AuthService.logout(); 
-            document.cookie = "plugfit_access=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict; Secure";
-            toast.success("Session Terminated", "You have been logged out securely.", "bottom-right");
-            router.refresh(); 
-            router.push("/login");
-        } catch (error) {
-			console.log("Logout Error:", error);
-            toast.error("Logout Anomaly", "Failed to gracefully sever the auth stream.", "bottom-right");
-        }
-    };
+    try {
+      await auth.logout();
+      toast.success("Session Terminated", "You have been logged out securely.", "bottom-right");
+    } catch (error) {
+      console.error("Logout Error:", error);
+      toast.error("Logout Anomaly", "Failed to gracefully sever the auth stream.", "bottom-right");
+    }
+  };
 
   return (
-    <DashboardView 
-      user={auth.user} 
+    <DashboardView
+      user={user}
       onLogout={handleLogout}
     />
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { LayoutDashboard, FolderGit2, Globe, User, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, FolderGit2, User, LogOut } from "lucide-react";
 import Image from "next/image";
 import { UserOut } from "@/types/api";
 
@@ -15,18 +15,8 @@ interface NavigationProps {
 export function Navigation({ activeTab, setActiveTab, user, onLogout }: NavigationProps) {
   const mobileNavItems = [
     { name: "Projects", icon: <FolderGit2 className="w-5 h-5" />, isCenter: false },
-    { name: "Explore", icon: <Globe className="w-5 h-5" />, isCenter: false },
     { name: "Dashboard", icon: <LayoutDashboard className="w-5.5 h-5.5" />, isCenter: true },
     { name: "Profile", icon: <User className="w-5 h-5" />, isCenter: false },
-    { name: "Settings", icon: <Settings className="w-5 h-5" />, isCenter: false },
-  ];
-
-  const desktopNavItems = [
-    mobileNavItems[2], // Dashboard
-    mobileNavItems[0], // Projects
-    mobileNavItems[1], // Explore
-    mobileNavItems[3], // Profile
-    mobileNavItems[4], // Settings
   ];
 
   const themeStyles = {
@@ -56,15 +46,15 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
           </div>
 
           <nav className="space-y-1.5">
-            {desktopNavItems.map((item) => {
+            {mobileNavItems.map((item) => {
               const isActive = activeTab === item.name;
               return (
                 <button
                   key={item.name}
                   onClick={() => setActiveTab(item.name)}
                   className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    isActive 
-                      ? "bg-brand-blue/15 text-brand-yellow border border-brand-blue/20 shadow-inner" 
+                    isActive
+                      ? "bg-brand-blue/15 text-brand-yellow border border-brand-blue/20 shadow-inner"
                       : "text-blue-400/60 hover:text-white hover:bg-blue-950/20 border border-transparent"
                   }`}
                 >
@@ -78,10 +68,12 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
           </nav>
         </div>
 
-        {/* --- ENHANCED PROFILE ACTION HUB --- */}
-        <div 
-          onClick={onLogout} 
-          className="flex items-center gap-3 p-2.5 border-t border-slate-900/80 pt-4 cursor-pointer bg-transparent hover:bg-blue-950/20 border border-transparent hover:border-blue-900/20 rounded-xl transition-all duration-300 group relative overflow-hidden"
+        {/* --- ENHANCED PROFILE ACTION HUB (keyboard-accessible logout) --- */}
+        <button
+          type="button"
+          onClick={onLogout}
+          aria-label={user?.name ? `Log out ${user.name}` : "Log out"}
+          className="w-full text-left flex items-center gap-3 p-2.5 border-t border-slate-900/80 pt-4 cursor-pointer bg-transparent hover:bg-blue-950/20 hover:border-blue-900/20 border border-transparent rounded-xl transition-all duration-300 group relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/60"
         >
           {/* Gradient Cell Wrapper with System Active Indicator Pip */}
           <div className="relative shrink-0">
@@ -104,9 +96,9 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
 
           {/* Interactive Logout Vector Trigger */}
           <div className="text-blue-400/40 group-hover:text-red-400 transition-colors pr-1 shrink-0">
-            <LogOut className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform duration-200" />
+            <LogOut className="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform duration-200" aria-hidden="true" />
           </div>
-        </div>
+        </button>
       </aside>
 
       {/* --- MOBILE NAVIGATION DOCK --- */}
@@ -161,7 +153,7 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
           </div>
 
           {/* --- INTERACTIVE ITEM MATRIX FOREGROUND --- */}
-          <nav className="absolute inset-0 grid grid-cols-5 h-full items-center z-10 w-full">
+          <nav className="absolute inset-0 grid grid-cols-3 h-full items-center z-10 w-full">
             {mobileNavItems.map((item) => {
               const isActive = activeTab === item.name;
               

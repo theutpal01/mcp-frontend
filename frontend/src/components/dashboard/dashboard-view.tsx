@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Navigation } from "./navigation";
 import { DashboardWorkspace } from "./dashboard-workspace";
-import { ViewPlaceholder } from "./view-placeholder";
+import { ProfileWorkspace } from "./profile-workspace";
 import { UserOut } from "@/types/api";
 import { MCPContextNexusBackground } from "../auth/reactive-background";
 import { ProjectsWorkspace } from "./projects-workspace";
@@ -44,7 +44,7 @@ export function DashboardView({ user = null, onLogout, glassLayout = true }: Das
 				) : activeTab === "Projects" ? (
 					<ProjectsWorkspace />
 				) : (
-					<ViewPlaceholder title={activeTab} />
+					<ProfileWorkspace />
 				)}
 			</main>
 		</div >

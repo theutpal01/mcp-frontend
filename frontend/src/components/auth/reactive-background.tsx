@@ -19,6 +19,10 @@ export function MCPContextNexusBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Respect user motion preferences — render a single static frame instead
+    // of running a continuous animation loop (battery + vestibular safety)
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     let animationId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
@@ -92,7 +96,7 @@ export function MCPContextNexusBackground() {
         const currentTrackPoints: { x: number; y: number }[] = [];
 
         for (let s = 0; s <= segmentCount; s++) {
-          let currentX = (width / segmentCount) * s;
+          const currentX = (width / segmentCount) * s;
           let currentY = baseTrackY;
 
           // Mathematical structural ambient wave drift
@@ -132,7 +136,7 @@ export function MCPContextNexusBackground() {
         ctx.lineTo(lastPt.x, lastPt.y);
 
         const distToMouseY = Math.abs(baseTrackY - m.y);
-        let trackAlpha = 0.12 + Math.sin(time * 0.4 + t) * 0.02;
+        const trackAlpha = 0.12 + Math.sin(time * 0.4 + t) * 0.02;
         let trackColor = `rgba(0, 132, 255, ${trackAlpha})`;
 
         if (distToMouseY < gatewayRadius) {
@@ -209,7 +213,10 @@ export function MCPContextNexusBackground() {
         }
       }
 
-      animationId = requestAnimationFrame(render);
+      // Reduced-motion users get a single static frame — no loop is scheduled
+      if (!prefersReducedMotion) {
+        animationId = requestAnimationFrame(render);
+      }
     };
 
     render();

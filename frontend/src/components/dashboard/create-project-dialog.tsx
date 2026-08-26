@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X, Upload, Link2, Globe, FileJson, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getApiErrorDetail } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { LoadingSpinner } from "../ui/loading-spinner";
@@ -26,6 +26,8 @@ export function CreateProjectDialog({ isOpen, onClose, onSuccess }: CreateProjec
   const [inputMethod, setInputMethod] = useState<"none" | "url" | "file">("none");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
   const resetForm = () => {
@@ -44,10 +46,31 @@ export function CreateProjectDialog({ isOpen, onClose, onSuccess }: CreateProjec
     }
   };
 
+  // Escape-to-close + body scroll lock while the dialog is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") handleClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Move focus into the dialog for keyboard and screen-reader users
+    const focusTimer = setTimeout(() => nameInputRef.current?.focus(), 50);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      clearTimeout(focusTimer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isLoading]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const validTypes = ["application/json", "application/x-yaml", "text/yaml", "text/x-yaml"];
       const isYaml = file.name.endsWith(".yaml") || file.name.endsWith(".yml");
       const isJson = file.type === "application/json" || file.name.endsWith(".json");
 
@@ -91,19 +114,12 @@ export function CreateProjectDialog({ isOpen, onClose, onSuccess }: CreateProjec
       resetForm();
       onSuccess();
       onClose();
-    } catch (err: any) {
-      // Handle validation errors (422) which return array of {type, loc, msg, input}
-      let message = "Failed to create project. Please try again.";
-      const detail = err?.response?.data?.detail;
-
-      if (Array.isArray(detail)) {
-        // Join all validation error messages
-        message = detail.map((e: any) => e.msg).join(", ");
-      } else if (typeof detail === "string") {
-        message = detail;
-      } else if (err?.message) {
-        message = err.message;
-      }
+    } catch (err: unknown) {
+      const detail = getApiErrorDetail(err);
+      const message =
+        detail ??
+        ((err as { message?: string })?.message ??
+          "Failed to create project. Please try again.");
 
       setError(message);
       toast.error("Creation Failed", message, "bottom-right");
@@ -123,12 +139,18 @@ export function CreateProjectDialog({ isOpen, onClose, onSuccess }: CreateProjec
       />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-project-title"
+        className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-200"
+      >
         <div className="bg-[#030914]/95 backdrop-blur-xl border border-blue-900/40 rounded-3xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 pb-4 border-b border-blue-900/30">
             <div>
-              <h2 className="text-xl font-bold text-white tracking-tight">Create New Project</h2>
+              <h2 id="create-project-title" className="text-xl font-bold text-white tracking-tight">Create New Project</h2>
               <p className="text-xs font-mono text-blue-400/50 mt-0.5">Configure your MCP server</p>
             </div>
             <button
@@ -156,10 +178,12 @@ export function CreateProjectDialog({ isOpen, onClose, onSuccess }: CreateProjec
                 Project Name <span className="text-red-400">*</span>
               </label>
               <Input
+                ref={nameInputRef}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Production API Gateway"
                 disabled={isLoading}
+                aria-required="true"
                 className="bg-[#020c1d] border-blue-900/40 text-white focus:border-brand-blue/60 placeholder:text-blue-400/30"
               />
             </div>

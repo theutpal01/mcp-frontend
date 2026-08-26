@@ -15,7 +15,6 @@ export const AuthService = {
     const { data } = await api.post<Token>("/auth/login", form, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
-	console.log("Login Response Data:", data); // Debugging line
     return data;
   },
 
@@ -29,8 +28,18 @@ export const AuthService = {
     return data;
   },
 
+  async requestPasswordReset(email: string): Promise<Record<string, string>> {
+    const { data } = await api.post<Record<string, string>>("/auth/forgot-password", { email });
+    return data;
+  },
+
   async getMe(): Promise<UserOut> {
     const { data } = await api.get<UserOut>("/auth/me");
+    return data;
+  },
+
+  async updateProfile(payload: { name: string }): Promise<UserOut> {
+    const { data } = await api.patch<UserOut>("/auth/me", payload);
     return data;
   },
 
