@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 
-export function Navbar() {
+export function Navbar({ onAuthClick }: { onAuthClick?: () => void } = {}) {
   return (
-    <nav className="fixed top-0 inset-x-0 h-20 z-50 border-b border-blue-500/20 bg-[#05070d] overflow-hidden">
+    <nav className="fixed top-0 inset-x-0 h-20 z-50 border-b border-blue-500/20 bg-[#05070d]/70 backdrop-blur-md overflow-hidden">
       {/* Wavy circuit-line background */}
       <svg
         className="absolute inset-0 w-full h-full opacity-30 pointer-events-none"

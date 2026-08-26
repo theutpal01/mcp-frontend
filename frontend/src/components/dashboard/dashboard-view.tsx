@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Navigation } from "./navigation";
 import { DashboardWorkspace } from "./dashboard-workspace";
 import { ViewPlaceholder } from "./view-placeholder";
@@ -25,50 +26,88 @@ export function DashboardView({
 	initialProjectId = null,
 	initialMcpId = null,
 }: DashboardViewProps) {
-	const [activeTab, setActiveTab] = useState<string>(
-		initialMcpId
-			? `mcp-detail-${initialMcpId}`
-			: initialProjectId
-			? `project-detail-${initialProjectId}`
-			: "Dashboard"
-	);
-	const [selectedProjectId, setSelectedProjectId] = useState<string | null>(initialProjectId);
-	const [selectedMcpId, setSelectedMcpId] = useState<string | null>(initialMcpId);
+	const pathname = usePathname();
+	const router = useRouter();
+
+	const getTabFromPathname = (path: string): string => {
+		if (path === "/dashboard") return "Dashboard";
+		if (path === "/projects") return "View my projects";
+		if (path === "/others") return "View others";
+		if (path === "/profile") return "Profile";
+		if (path === "/profiles") return "View others profile";
+		if (path === "/settings") return "Settings";
+		
+		const mcpMatch = path.match(/^\/dashboard\/projects\/([^/]+)\/mcp\/([^/]+)/);
+		if (mcpMatch) {
+			return `mcp-detail-${mcpMatch[2]}`;
+		}
+		
+		const projectMatch = path.match(/^\/dashboard\/projects\/([^/]+)/);
+		if (projectMatch) {
+			return `project-detail-${projectMatch[1]}`;
+		}
+		
+		if (initialMcpId) return `mcp-detail-${initialMcpId}`;
+		if (initialProjectId) return `project-detail-${initialProjectId}`;
+		
+		return "Dashboard";
+	};
+
+	const activeTab = getTabFromPathname(pathname);
+
+	const getProjectIdFromPathname = (path: string): string | null => {
+		const mcpMatch = path.match(/^\/dashboard\/projects\/([^/]+)\/mcp\/([^/]+)/);
+		if (mcpMatch) return mcpMatch[1];
+		const projectMatch = path.match(/^\/dashboard\/projects\/([^/]+)/);
+		if (projectMatch) return projectMatch[1];
+		return initialProjectId;
+	};
+
+	const getMcpIdFromPathname = (path: string): string | null => {
+		const mcpMatch = path.match(/^\/dashboard\/projects\/([^/]+)\/mcp\/([^/]+)/);
+		if (mcpMatch) return mcpMatch[2];
+		return initialMcpId;
+	};
+
+	const selectedProjectId = getProjectIdFromPathname(pathname);
+	const selectedMcpId = getMcpIdFromPathname(pathname);
 	const [selectedMcpName, setSelectedMcpName] = useState<string>("data-processor-mcp");
 
 	const handleSelectProject = (projectId: string) => {
-		setSelectedProjectId(projectId);
-		setSelectedMcpId(null);
-		setActiveTab(`project-detail-${projectId}`);
+		router.push(`/dashboard/projects/${projectId}`);
 	};
 
 	const handleSelectMcp = (mcpId: string, mcpName: string) => {
-		setSelectedMcpId(mcpId);
 		setSelectedMcpName(mcpName || "data-processor-mcp");
-		setActiveTab(`mcp-detail-${mcpId}`);
+		router.push(`/dashboard/projects/${selectedProjectId}/mcp/${mcpId}`);
 	};
 
 	const handleBackToProjectDetail = () => {
-		setSelectedMcpId(null);
 		if (selectedProjectId) {
-			setActiveTab(`project-detail-${selectedProjectId}`);
+			router.push(`/dashboard/projects/${selectedProjectId}`);
 		} else {
-			setActiveTab("View my projects");
+			router.push("/projects");
 		}
 	};
 
 	const handleBackToProjects = () => {
-		setSelectedProjectId(null);
-		setSelectedMcpId(null);
-		setActiveTab("View my projects");
+		router.push("/projects");
 	};
 
 	const handleTabChange = (tab: string) => {
-		if (tab !== "View my projects" && !tab.startsWith("project-detail") && !tab.startsWith("mcp-detail")) {
-			setSelectedProjectId(null);
-			setSelectedMcpId(null);
+		if (tab === "Dashboard") {
+			router.push("/dashboard");
+		} else if (tab === "View my projects" || tab === "Projects") {
+			router.push("/projects");
+		} else if (tab === "View others") {
+			router.push("/others");
+		} else if (tab === "Profile") {
+			router.push("/profile");
+		} else if (tab === "View others profile") {
+			router.push("/profiles");
+		} else if (tab === "Settings") {
+			router.push("/settings");
 		}
-		setActiveTab(tab);
 	};
 
 	return (

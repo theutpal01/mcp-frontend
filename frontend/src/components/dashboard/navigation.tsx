@@ -49,7 +49,7 @@ export function Navigation({ activeTab, setActiveTab, user, onLogout }: Navigati
       `}</style>
 
       {/* --- DESKTOP SIDEBAR NAVIGATION --- */}
-      <aside className="hidden md:flex w-64 border-r border-slate-900/60 bg-[#030914]/80 backdrop-blur-2xl flex-col justify-between p-6 shrink-0 z-30 h-full rounded-r-2xl select-none">
+      <aside className="hidden md:flex w-64 border-r border-slate-900/60 bg-[#0055A4]/30 backdrop-blur-2xl flex-col justify-between p-6 shrink-0 z-30 h-screen sticky top-0 rounded-r-2xl select-none">
         <div className="space-y-8">
           <div className="flex items-center gap-3 pl-2">
             <Image src="/logo.svg" alt="PlugFit Logo" width={32} height={32} className="w-8 h-8" />

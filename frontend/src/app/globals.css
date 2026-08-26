@@ -78,3 +78,31 @@ a {
     filter: blur(0);
   }
 }
+
+/* --- BRAND SCROLLBAR CUSTOMIZATION --- */
+/* Chrome, Safari, and newer Edge browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(3, 9, 20, 0.5);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FBEB4D;
+  border-radius: 9999px;
+  border: 2.5px solid #030508; /* Creates inset padding effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e5d540; /* Slightly darker shade on hover */
+}
+
+/* Firefox standard scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FBEB4D rgba(3, 9, 20, 0.5);
+}
