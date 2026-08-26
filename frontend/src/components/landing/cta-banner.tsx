@@ -3,12 +3,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { Sora } from "next/font/google";
-
-const sora = Sora({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-});
 
 const W = 224; // bar width, matches Figma asset
 const H = 578; // full banner height, matches Figma asset
@@ -54,8 +48,8 @@ export function CtaBanner() {
   const totalWidth = BAR_TOPS.length * W;
 
   return (
-    <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 select-none w-full flex justify-center">
-      <div className="relative w-full max-w-4xl rounded-[32px] overflow-hidden min-h-[260px]">
+    <section className="pt-0 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 select-none w-full flex justify-center">
+      <div className="relative w-full max-w-4xl rounded-[32px] overflow-hidden min-h-[220px]">
         {/* Skyline: one shared gradient in absolute (userSpaceOnUse) coordinates,
             so every bar samples the SAME absolute row — yellow lines up across all bars. */}
         <svg
@@ -94,22 +88,39 @@ export function CtaBanner() {
         </svg>
 
         {/* Content container */}
-        <div
-          className={`${sora.className} relative z-10 flex flex-col items-center justify-center min-h-[260px] p-10 sm:p-14 text-center space-y-6`}
-        >
-          <div className="space-y-1">
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-wide">
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-[220px] p-8 sm:p-10 text-center space-y-4">
+          <div className="space-y-0.5">
+            <h2
+              className="text-3xl sm:text-5xl text-white tracking-wide"
+              style={{
+                fontFamily: "var(--font-hero)",
+                fontWeight: 600,
+              }}
+            >
               Optimize your
             </h2>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-wide">
+            <h2
+              className="text-3xl sm:text-5xl text-white tracking-wide"
+              style={{
+                fontFamily: "var(--font-hero)",
+                fontWeight: 600,
+              }}
+            >
               MCP today
             </h2>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-1">
             <Link
               href="/signup"
-              className="inline-block px-8 py-3.5 rounded-2xl bg-[#040e21] text-[#FBEB4D] font-bold text-lg hover:brightness-110 active:scale-95 transition-all duration-200"
+              className="inline-flex items-center justify-center px-10 py-3.5 rounded-2xl text-[#D9D94D] hover:brightness-110 active:scale-95 transition-all duration-200"
+              style={{
+                backgroundColor: "#011226",
+                fontFamily: "var(--font-body)",
+                fontWeight: 700,
+                fontSize: "clamp(1rem, 0.8rem + 0.5vw, 1.25rem)",
+                boxShadow: "4px 4px 4px rgba(0, 0, 0, 0.25)",
+              }}
             >
               Get Started
             </Link>

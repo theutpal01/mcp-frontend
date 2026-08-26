@@ -8,7 +8,7 @@ export function FeaturesGrid() {
     {
       num: "1",
       title: "Universal Ingest",
-      desc: "OpenAPI Swagger MCP URLs Tool manifest",
+      desc: "OpenAPI  Swagger  MCP URLs  Tool manifest",
     },
     {
       num: "2",
@@ -38,9 +38,22 @@ export function FeaturesGrid() {
   ];
 
   return (
-    <section id="features" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 select-none w-full">
+    <section
+      id="features"
+      className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 select-none w-full"
+    >
       {/* Section Title */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-[#FBEB4D] tracking-widest uppercase font-sans text-center mb-10">
+      <h2
+        className="text-center mb-10 uppercase"
+        style={{
+          fontFamily: "'Conthrax', 'Helvetica Neue', Arial, sans-serif",
+          fontWeight: 600,
+          letterSpacing: "0.05em",
+          color: "#D9D94D",
+          fontSize: "clamp(1.75rem, 1rem + 3.2vw, 3.75rem)",
+          lineHeight: 1,
+        }}
+      >
         Features
       </h2>
 
@@ -49,21 +62,49 @@ export function FeaturesGrid() {
         {features.map((item) => (
           <div
             key={item.num}
-            className="flex h-24 rounded-full border border-blue-900/40 overflow-hidden bg-[#041630]/30 hover:border-blue-500/40 transition-all duration-200 shadow-lg"
+            className="relative flex h-24 rounded-full border border-blue-900/40 overflow-hidden transition-all duration-200"
+            style={{ backgroundColor: "rgba(0, 85, 164, 0.2)" }}
           >
-            {/* Left Block: Rounded Cap containing Yellow Number */}
-            <div className="w-20 sm:w-24 bg-[#052857] flex items-center justify-center border-r border-blue-900/40 shrink-0">
-              <span className="text-[#FBEB4D] font-extrabold text-3xl font-sans">
+            {/* Left Block: Number */}
+            <div
+              className="w-20 sm:w-24 flex items-center justify-center shrink-0"
+              style={{ backgroundColor: "rgba(0, 85, 164, 0.35)" }}
+            >
+              <span
+                style={{
+                  fontFamily: "'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 700,
+                  color: "#D9D94D",
+                  fontSize: "clamp(1.75rem, 1rem + 2vw, 3rem)",
+                }}
+              >
                 {item.num}
               </span>
             </div>
 
-            {/* Right Block: Text Content */}
-            <div className="flex-1 flex flex-col justify-center px-6 py-2">
-              <h3 className="text-sm sm:text-base font-bold text-[#FBEB4D] font-sans">
+            {/* Right Block: Text Content — centered, yellow title */}
+            <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-2">
+              <h3
+                className="mb-0.5"
+                style={{
+                  fontFamily: "'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 700,
+                  color: "#D9D94D",
+                  fontSize: "clamp(0.9rem, 0.6rem + 0.8vw, 1.15rem)",
+                  lineHeight: 1.2,
+                }}
+              >
                 {item.title}
               </h3>
-              <p className="text-gray-300 text-xs sm:text-sm font-sans mt-0.5 leading-relaxed">
+              <p
+                style={{
+                  fontFamily: "'Helvetica Neue', Arial, sans-serif",
+                  fontWeight: 500,
+                  color: "#0276E2",
+                  fontSize: "clamp(0.78rem, 0.55rem + 0.9vw, 1.1rem)",
+                  lineHeight: 1.4,
+                }}
+              >
                 {item.desc}
               </p>
             </div>

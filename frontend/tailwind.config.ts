@@ -12,6 +12,7 @@ const config: Config = {
         // High-end Neo-Grotesque pairing Helvetica with crisp developer mono
         sans: ["Helvetica", "Arial", "sans-serif"],
         mono: ["JetBrains Mono", "SF Mono", "Menlo", "Courier New", "monospace"],
+        hero: ["var(--font-hero)", "sans-serif"],
       },
       colors: {
         background: "#030508", // Absolute midnight black
